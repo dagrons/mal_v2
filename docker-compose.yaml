@@ -1,0 +1,5 @@
+version: "3.3" # format <=> docker engine version <=> docker-compose version
+
+networks:
+
+services:
