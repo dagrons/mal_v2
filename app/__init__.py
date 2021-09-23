@@ -1,8 +1,8 @@
 import os
 from flask import Flask
+from app.api import api
 
 from .config import config
-from .api import api
 
 def make_app(config_name=None):
     if config_name is None:
@@ -14,7 +14,6 @@ def make_app(config_name=None):
     register_blueprints(app)        
 
     return app
-
 
 def register_blueprints(app):        
     app.register_blueprint(api, url_prefix='/api')
