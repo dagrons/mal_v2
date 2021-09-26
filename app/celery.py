@@ -4,7 +4,9 @@ import requests
 import sys
 import os
 from celery import Celery 
+from celery.signals import task_success, task_prerun, task_failure
 from py2neo import Graph
+from redis import StrictRedis
 
 from app.config import config
 from app.models.feature import *
@@ -25,6 +27,36 @@ def make_app(config_name=None):
     return app
 
 app = make_app()
+
+@task_prerun.connect
+def task_prerun_handler(sender=None, headers=None, body=None, **kwargs):    
+    redis_client = StrictRedis(decode_responses=True)
+    tl_lock = redis_client.setnx('lock:tl', 1) # lock for task list 
+    try:
+        if tl_lock:            
+            redis_client.hset('task_hash', sender.request.id, 'RUNNING')        
+    finally:                
+        redis_client.delete('lock:tl')        
+
+@task_success.connect 
+def task_success_handler(sender=None, result=None, **kwargs):    
+    redis_client = StrictRedis(decode_responses=True)
+    tl_lock = redis_client.setnx('lock:tl', 1) # lock for task list 
+    try:
+        if tl_lock:            
+            redis_client.hset('task_hash', sender.request.id, 'SUCCESS')        
+    finally:                
+        redis_client.delete('lock:tl')      
+
+@task_failure.connect
+def task_failure_handler(sender=None, task_id=None, exception=None, args=None, kwarg=None, traceback=None, einfo=None, **kwargs):
+    redis_client = StrictRedis(decode_responses=True)
+    tl_lock = redis_client.setnx('lock:tl', 1) # lock for task list 
+    try:
+        if tl_lock:            
+            redis_client.hset('task_hash', sender.request.id, 'EXCEPTION')        
+    finally:                
+        redis_client.delete('lock:tl')      
 
 @app.task
 def submit(f, id):

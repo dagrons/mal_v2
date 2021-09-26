@@ -3,6 +3,8 @@ from flask import Flask
 from app.api import api
 
 from .config import config
+from .extensions import mongo 
+from .extensions import neo
 
 def make_app(config_name=None):
     if config_name is None:
@@ -16,8 +18,8 @@ def make_app(config_name=None):
     return app
 
 def register_blueprints(app):        
-    app.register_blueprint(api, url_prefix='/api')
+    app.register_blueprint(api, url_prefix='/api/v2')
 
 def register_extensions(app):
-    pass
-
+    mongo.init_app(app)
+    neo.init_app(app)
