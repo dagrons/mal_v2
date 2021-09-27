@@ -13,7 +13,7 @@ def status(id):
         tl_lock = redis_client.setnx('lock:tl', 1) # lock for task list     
         if tl_lock:            
             if redis_client.hexists('task_hash', id):
-                if redis_client.hget('task_hash', id) == 'RUNNING':
+                if redis_client.hget('task_hash', id) == 'RUNNING' or redis_client.hget('task_hash', id) == 'PENDING':
                     return 'running'
                 elif redis_client.hget('task_hash', id) == 'EXCEPTION':
                     return 'exception'
