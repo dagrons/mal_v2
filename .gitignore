@@ -2,3 +2,4 @@
 app/static/
 app/templates/
 playground/
+.supervisord
