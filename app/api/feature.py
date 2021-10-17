@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, send_file
 import numpy as np
 from collections import Counter
 
@@ -52,8 +52,8 @@ def get_report(id):
             'five_most_like': five_most_like
         })
 
-@feature_bp.route('/png/get/<id>')
-def get_png(self, filename):
+@feature_bp.route('/bmp/get/<filename>')
+def get_bmp(filename):
     """
     get the png file of task
     if task id does not exist, return None
@@ -64,4 +64,4 @@ def get_png(self, filename):
     if len(Feature.objects(task_id=filename)) < 1:
         abort(404)
     else:
-        return Feature.objects(task_id=filename).first().local.bmp_file    
+        return send_file(Feature.objects(task_id=filename).first().local.bmp_file, attachment_filename=filename+'.bmp')
