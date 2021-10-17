@@ -1,14 +1,18 @@
 from redis import StrictRedis
+import os
 
 from app.models.feature import *
 from app.impl.task import *
 from app.utils.is_pe import is_pe
 from app.utils.compute_md5 import compute_md5
+from flask import current_app
+
 
 def status(id):
     if len(Feature.objects(task_id=id)) >= 1:
-        return "reported"
-    redis_client = StrictRedis(decode_responses=True)        
+        return "reported"    
+    redis_host = current_app.config['REDIS_HOST']
+    redis_client = StrictRedis(host=redis_host, port=6379, db=0, decode_responses=True)        
     try:
         tl_lock = redis_client.setnx('lock:tl', 1) # lock for task list     
         if tl_lock:            
@@ -25,7 +29,8 @@ def status(id):
         redis_client.delete('lock:tl')
 
 def running_list():
-    redis_client = StrictRedis(decode_responses=True)        
+    redis_host = current_app.config['REDIS_HOST']
+    redis_client = StrictRedis(host=redis_host, port=6379, db=0, decode_responses=True)        
     try:
         tl_lock = redis_client.setnx('lock:tl', 1) # lock for task list     
         if tl_lock:
@@ -35,7 +40,8 @@ def running_list():
         redis_client.delete('lock:tl')    
 
 def pending_list():    
-    redis_client = StrictRedis(decode_responses=True)        
+    redis_host = current_app.config['REDIS_HOST']
+    redis_client = StrictRedis(host=redis_host, port=6379, db=0, decode_responses=True)        
     try:
         tl_lock = redis_client.setnx('lock:tl', 1) # lock for task list     
         if tl_lock:            
@@ -46,7 +52,8 @@ def pending_list():
 
 
 def left_cnt():    
-    redis_client = StrictRedis(decode_responses=True)        
+    redis_host = current_app.config['REDIS_HOST']
+    redis_client = StrictRedis(host=redis_host, port=6379, db=0, decode_responses=True)        
     try:
         tl_lock = redis_client.setnx('lock:tl', 1) # lock for task list     
         if tl_lock:
@@ -56,7 +63,8 @@ def left_cnt():
         redis_client.delete('lock:tl')    
 
 def pending_cnt():
-    redis_client = StrictRedis(decode_responses=True)        
+    redis_host = current_app.config['REDIS_HOST']
+    redis_client = StrictRedis(host=redis_host, port=6379, db=0, decode_responses=True)        
     try:
         tl_lock = redis_client.setnx('lock:tl', 1) # lock for task list     
         if tl_lock:

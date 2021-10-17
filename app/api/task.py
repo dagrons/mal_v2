@@ -3,6 +3,7 @@ from flask.blueprints import Blueprint
 from flask import request, jsonify
 from app import celery as celery_app
 from redis import StrictRedis
+from flask import current_app
 
 from app.models.feature import *
 from app.impl import task as taskImpl
@@ -33,7 +34,8 @@ def create():
             'filename': id
         })
     # check if task already exists
-    redis_client = StrictRedis(decode_responses=True)        
+    redis_host = current_app.config['REDIS_HOST']
+    redis_client = StrictRedis(host=redis_host, port=6379, db=0, decode_responses=True)        
     try:
         tl_lock = redis_client.setnx('lock:tl', 1) # lock for task list     
         if tl_lock:

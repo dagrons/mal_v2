@@ -1,5 +1,7 @@
-.env
-t.py
 __pycache__/
 .vscode
 *.pyc
+.env
+.supervisord/*
+*.sock
+.flaskenv

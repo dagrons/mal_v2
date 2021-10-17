@@ -7,6 +7,7 @@ services:
   redis:
     image: redis
     container_name: redis
+    restart: always
     networks:
       - mal
     ports:
@@ -56,3 +57,29 @@ services:
       - 7687:7687
     volumes:
       - /data/neo4j:/data
+
+  mal:
+    build: .
+    container_name: mal
+    restart: always
+    networks:
+      - mal
+    depends_on:
+      - mongo
+      - neo4j
+      - redis
+    ports:
+      - 5000:5000    
+      - 5656:5656
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - CUCKOO_URL=http://host.docker.internal:8000
+      - CUCKOO_TOKEN="Bearer PYK9j3-G4zyScn4EDW3eKg"
+      - MAX_WOKERS=14
+      - MONGO_HOST=mongo
+      - NEO4J_PASSWORD=daxiahyh
+      - NEO4J_URL=http://neo4j:7474
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_BROKER_BACKEND=redis://redis:6379/0
+      - REDIS_HOST=redis

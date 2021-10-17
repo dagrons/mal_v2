@@ -11,7 +11,6 @@ def make_app(config_name=None):
         config_name = os.getenv('FLASK_CONFIG', 'development')
     app = Flask(__name__)
     app.config.from_object(config[config_name])
-
     register_extensions(app)    
     register_blueprints(app)        
 

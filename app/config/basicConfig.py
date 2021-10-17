@@ -10,6 +10,7 @@ class basicConfig():
     CUCKOO_URL = os.getenv('CUCKOO_URL')
     CUCKOO_TOKEN = os.getenv('CUCKOO_TOKEN')
     MAX_WORKERS = int(os.getenv('MAX_WOKERS', 5))
+    REDIS_HOST = os.getenv('REDIS_HOST', 'redis')
     CUCKOO_SETTINGS = {
         'url': os.getenv('CUCKOO_URL'),
         'token': os.getenv('CUCKOO_TOKEN')

@@ -17,9 +17,7 @@ pymongo==3.11.4
 python-dotenv==0.17.1
 redis==3.5.3
 remote-pdb==2.1.0
-torch==1.8.1
-torchaudio==0.8.1
-torchsummary==1.5.1
-torchvision==0.9.1
 ujson==4.0.2
-
+supervisor
+imageio
+torchsummary

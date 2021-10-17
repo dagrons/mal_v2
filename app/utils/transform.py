@@ -3,7 +3,6 @@ import pefile
 import array
 import imageio
 import numpy
-from cfgexplorer import cfg_explore
 
 def get_bytes_from_file(filepath, bytes_path, type='exe'):
     """
@@ -52,12 +51,3 @@ def get_asm_from_bytes(bytes_path, asm_path):
     """
     cmd_str = """ndisasm {} |""".format(bytes_path) + """awk '{{$1="";$2="";gsub(/^\s+|\s$/, "");print $1}}' > {}""" .format(asm_path)
     os.system(cmd_str)
-
-def get_cfg_from_pe(binary_path, cfg_path):
-    """
-    generate cfg from binary
-
-    :param binary_path: binary path
-    :param cfg_path: generated cfg path with suffix .svg
-    """
-    cfg_explore(binary=binary_path, output=cfg_path)
