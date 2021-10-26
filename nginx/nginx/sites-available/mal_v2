@@ -1,0 +1,32 @@
+server {
+       listen 10002 ssl;
+       server_name mal.lab;
+
+       client_max_body_size 2M;
+
+
+       ssl_certificate  /etc/nginx/cert/certificate.pem;
+       ssl_certificate_key      /etc/nginx/cert/key.pem;
+
+
+       location ~ ^/api/v2/ {
+                include proxy_params;
+                proxy_pass http://localhost:5000;
+       }
+
+       location ~ ^/api/kg/ {
+       		include proxy_params;
+		proxy_pass http://localhost:3000;
+		rewrite "^/api/kg/(.*)" /$1 break;
+       }
+
+       location ^~ /kg/ {
+       		alias /var/www/html/kg_ui/;
+       }      
+
+       location ~ ^/ {
+                root /var/www/html/mal_ui;
+                index index.html;
+       }
+}
+
