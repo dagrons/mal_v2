@@ -83,3 +83,19 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_BROKER_BACKEND=redis://redis:6379/0
       - REDIS_HOST=redis
+    
+  kg:
+    image: kg
+    container_name: kg
+    restart: always
+    networks: 
+      - mal
+    ports:
+      - 3000:3000
+    environment:
+      NEO4J_HOST: neo4j
+      NEO4J_PORT: 7687
+      NEO4J_USERNAME: neo4j
+      NEO4J_PASSWORD: daxiahyh
+
+        
