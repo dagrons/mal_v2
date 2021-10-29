@@ -13,7 +13,7 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - /data/redis:/data
+      - /data/mal_v2/redis:/data
     
   mongo:
     image: mongo
@@ -22,9 +22,9 @@ services:
     networks:
       - mal
     ports:
-      - 27017:27017
+      - 27018:27017
     volumes:
-      - /data/mongo:/data/db
+      - /data/mal_v2/mongo:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongoadmin
       MONGO_INITDB_ROOT_PASSWORD: mongoadmin
@@ -56,7 +56,7 @@ services:
       - 7474:7474
       - 7687:7687
     volumes:
-      - /data/neo4j:/data
+      - /data/mal_v2/neo4j:/data
 
   mal:
     build: .
