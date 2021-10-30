@@ -8,9 +8,9 @@ Requires=vboxwebsrv.service
 Requires=docker.service
 
 [Service]
-User=dell
-ExecStart=/bin/bash -c 'cd /home/dell/docker-cuckoo && docker-compose -f docker-compose.vbox.yml up -d && cd /home/dell/mal_v2 && docker-compose up -d && docker logs -f dockercuckoo_cuckoo_1'
-ExecStop=/bin/bash -c 'cd /home/dell/docker-cuckoo && docker-compose down -v && cd /home/dell/mal_v2 && docker-compose down -v'
+User=root
+ExecStart=/bin/bash -c 'cd /opt/docker-cuckoo && docker-compose -f docker-compose.vbox.yml up -d && cd /opt/mal_v2 && docker-compose up -d && docker logs -f dockercuckoo_cuckoo_1'
+ExecStop=/bin/bash -c 'cd /opt/docker-cuckoo && docker-compose down -v && cd /opt/mal_v2 && docker-compose down -v'
 
 [Install]
 WantedBy=multi-user.target

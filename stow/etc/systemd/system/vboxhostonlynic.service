@@ -5,8 +5,7 @@ After=network.target
 
 [Service]
 Type=oneshot
-User=dell
-WorkingDirectory=/home/dell
+User=root
 ExecStart=/opt/systemd/system/vboxhostonly
 
 [Install]

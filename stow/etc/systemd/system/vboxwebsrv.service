@@ -5,7 +5,6 @@ Wants=network-online.target
 
 [Service]
 User=dell
-WorkingDirectory=/
 ExecStart=/usr/bin/vboxwebsrv --host 0.0.0.0
 Restart=always
 
