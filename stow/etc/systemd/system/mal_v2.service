@@ -3,9 +3,12 @@ Description=Start mal_v2 and docker_cuckoo
 After=vboxwebsrv.service
 After=vboxhostonlynic.service
 After=docker.service
+After=load-iptables.service
 Requires=vboxhostonlynic.service
 Requires=vboxwebsrv.service
 Requires=docker.service
+Requires=load-iptables.service
+
 
 [Service]
 User=root

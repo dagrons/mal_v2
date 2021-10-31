@@ -4,3 +4,4 @@ app/templates/
 playground/
 .supervisord/*
 !.supervisord/.gitkeep
+*~
