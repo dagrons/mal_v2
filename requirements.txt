@@ -21,3 +21,4 @@ ujson==4.0.2
 supervisor
 imageio
 torchsummary
+torch
