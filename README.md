@@ -1,19 +1,23 @@
+- [Requires](#Requires)
+- [Development](#Development)
+- [Docker](#Docker)
+- [Deployment](#Deployment)
+- [APIs](#APIs)
+
+
 This project builds a malware analysis platform
 
 # Requires
+*this sections contains common requirements for starting app in development mode and docker mode, we do not need this in deployment mode*
 
-- vboxwebsrv
 - docker-cuckoo
-
-## vboxwerbsrv
-
-```shell
-/usr/bin/vboxwebsrv --host 0.0.0.0
-```
 
 ## docker-cuckoo
 
-Start docker-cuckoo manually and make sure cuckoo listening on 8000
+First, make sure vboxhostonlynic, vboxwebsrv, load-iptables running healthily
+> see [mal_v2.service](stow/etc/systemd/system/mal_v2.service) for more details. 
+
+Then, Start docker-cuckoo manually and make sure cuckoo listening on 8000
 
 ```shell
 cd docker-cuckoo && docker-compose -f docker-compose.vbox.yml up -d 
@@ -67,6 +71,23 @@ set environment variable for docker-compose, just edit the docker-compose file!
 ```shell
 docker-compose up -d
 ```
+
+# Deployment 
+
+- TODO: install.sh
+
+## Stow
+
+```shell
+stow -t / stow 
+```
+
+## Start App 
+
+```shell
+systemctl start mal_v2.service
+```
+
 
 # APIs
 

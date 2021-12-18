@@ -53,8 +53,8 @@ services:
     networks:
       - mal
     ports:
-      - 7474:7474
-      - 7687:7687
+      - 7475:7474
+      - 7688:7687
     volumes:
       - /data/mal_v2/neo4j:/data
 
