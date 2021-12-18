@@ -3,6 +3,100 @@ import os
 import re
 import py2neo
 from py2neo import Graph, Node, Relationship, NodeMatcher
+from neo4j import GraphDatabase 
+
+def save_to_kg(kg_driver, res_json, filename):
+    from remote_pdb import RemotePdb
+    RemotePdb("localhost", 4444).set_trace()
+    ip_local = ['192.168.56.101', '192.168.56.1', '255.255.255.255']  # 存放对分析无意义的本地ip和域名
+    dllre = re.compile(r'([A-Za-z0-9]+(.dll|.DLL))')  # 获取DLL正则表达式
+    mailre = re.compile(r"(\w+@\w+\.\w+)")  # 获取邮件的正则表达式
+    ipre = re.compile(
+        r'(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)')
+    urlhttpre = re.compile(r"(http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+)")
+    urlre = re.compile(r"((www|WWW)[.](?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+)")
+
+    # 定义存放提取字段的列表
+    dll_list = []  # 存放dll
+    ip_list = []  # 存放ip
+    url_list = []  # 存放域名
+    mail_list = []  # 存放的邮箱
+
+    if dllre.findall(res_json):  # 导入dll
+        for dll_re in dllre.findall(res_json):
+            if '.' in dll_re[0]:
+                dll_list.append(dll_re[0])
+
+    if ipre.findall(res_json):  # and 'src' not in line and '192.168.56.101' not in line:  # 导入目的地址
+        for ipa in ipre.findall(res_json):
+            ww = ''
+            ww = '.'.join(ipa)
+            for ip_temp in ip_local:
+                if ip_temp not in ww:
+                    ip_list.append(ww)
+
+    if urlre.findall(res_json):  # 导入http[s]url
+        for urla in urlre.findall(res_json):
+            for url_temp in ip_local:
+                if url_temp not in urla[0]:
+                    url_list.append(urla[0])
+
+    if urlhttpre.findall(res_json):  # 导入url
+        for urla in urlhttpre.findall(res_json):
+            ww = ''
+            for tup in urla:
+                ww = ww + tup
+                aa = ww.split('\\')
+                ww = aa[0]
+            url_list.append(ww)
+
+    if mailre.findall(res_json):  # 导入邮箱
+        for mail in mailre.findall(res_json):
+            mail_list.append(mail)
+
+    def string_duplicate_4(s):
+        new_s = []
+        for x in s:
+            if x not in new_s:
+                new_s.append(x)
+        return new_s
+
+    # 删除列表中重复的元素
+    dll_list = string_duplicate_4(dll_list)
+    ip_list = string_duplicate_4(ip_list)
+    url_list = string_duplicate_4(url_list)
+    mail_list = string_duplicate_4(mail_list)
+
+    def add_malware(tx, filename):
+        tx.run("MERGE (a:Malware {name:$name})", name=filename)
+
+    def add_dll(tx, filename, dll_name):
+        tx.run("MERGE (a:DLL {name: $dll_name}) ", dll_name=dll_name)
+        tx.run("MATCH (m:Malware) WHERE m.name=\"{}\" MATCH (a:DLL) WHERE a.name=\"{}\" MERGE (m)-[:DLL]->(a)".format(filename, dll_name))            
+
+    def add_mail(tx, filename, mail_name):
+        tx.run("MERGE (a:Mail {name: $mail_name}) ", mail_name=mail_name)
+        tx.run("MATCH (m:Malware) WHERE m.name=\"{}\" MATCH (a:Mail) WHERE a.name=\"{}\" MERGE (m)-[:Mail]->(a)".format(filename, mail_name))
+
+    def add_ip(tx, filename, ip):
+        tx.run("MERGE (a:IP {name: $ip}) ", ip=ip)
+        tx.run("MATCH (m:Malware) WHERE m.name=\"{}\" MATCH (a:IP) WHERE a.name=\"{}\" MERGE (m)-[:IP]->(a)".format(filename, ip))
+
+    def add_url(tx, filename, url):
+        tx.run("MERGE (a:URL {name: $url}) ", url=url)
+        tx.run("MATCH (m:Malware) WHERE m.name=\"{}\" MATCH (a:URL) WHERE a.name=\"{}\" MERGE (m)-[:URL]->(a)".format(filename, url))
+    
+    with kg_driver.session() as session:
+        session.write_transaction(add_malware, filename)
+        for dll in dll_list:
+            session.write_transaction(add_dll, filename, dll)                        
+        for mail in mail_list:
+            session.write_transaction(add_mail, filename, mail)
+        for ip in ip_list:
+            session.write_transaction(add_ip, filename, ip)
+        for url in url_list:
+            session.write_transaction(add_url, filename, url)            
+
 
 
 def to_neo4j(g, res_json, filename):
@@ -22,6 +116,9 @@ def to_neo4j(g, res_json, filename):
     """
     构建正则表达式以提取字段
     """
+    """ from remote_pdb import RemotePdb
+    RemotePdb("localhost", 4444).set_trace() """
+
     ip_local = ['192.168.56.101', '192.168.56.1', '255.255.255.255']  # 存放对分析无意义的本地ip和域名
     dllre = re.compile(r'([A-Za-z0-9]+(.dll|.DLL))')  # 获取DLL正则表达式
     mailre = re.compile(r"(\w+@\w+\.\w+)")  # 获取邮件的正则表达式
@@ -102,3 +199,7 @@ def to_neo4j(g, res_json, filename):
         mail_relation = Relationship(start_node, 'Mail', mail_node)
         g.merge(mail_node, "Mail", "name")
         g.merge(mail_relation, "Mail", "name")
+
+    # 导入结果到知识图谱
+    kg_driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "000000"), name="graphdb")    
+    save_to_kg(kg_driver, res_json, filename)

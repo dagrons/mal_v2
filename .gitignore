@@ -5,3 +5,4 @@ playground/
 .supervisord/*
 !.supervisord/.gitkeep
 *~
+temp/
