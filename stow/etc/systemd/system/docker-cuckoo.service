@@ -1,0 +1,20 @@
+[Unit]
+Description=Start docker_cuckoo
+After=vboxwebsrv.service
+After=vboxhostonlynic.service
+After=docker.service
+After=load-iptables.service
+Requires=vboxhostonlynic.service
+Requires=vboxwebsrv.service
+Requires=docker.service
+Requires=load-iptables.service
+
+[Service]
+User=root
+ExecStart=/bin/bash -c 'cd /opt/docker-cuckoo && docker-compose -f docker-compose.vbox.yml up --force-recreate'
+ExecStop=/bin/bash -c 'cd /opt/docker-cuckoo && docker-compose down -v'
+
+[Install]
+WantedBy=multi-user.target
+
+
