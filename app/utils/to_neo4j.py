@@ -3,11 +3,8 @@ import os
 import re
 import py2neo
 from py2neo import Graph, Node, Relationship, NodeMatcher
-from neo4j import GraphDatabase 
 
-def save_to_kg(kg_driver, res_json, filename):
-    from remote_pdb import RemotePdb
-    RemotePdb("localhost", 4444).set_trace()
+def save_to_kg(res_json, filename):    
     ip_local = ['192.168.56.101', '192.168.56.1', '255.255.255.255']  # 存放对分析无意义的本地ip和域名
     dllre = re.compile(r'([A-Za-z0-9]+(.dll|.DLL))')  # 获取DLL正则表达式
     mailre = re.compile(r"(\w+@\w+\.\w+)")  # 获取邮件的正则表达式
@@ -200,6 +197,5 @@ def to_neo4j(g, res_json, filename):
         g.merge(mail_node, "Mail", "name")
         g.merge(mail_relation, "Mail", "name")
 
-    # 导入结果到知识图谱
-    kg_driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "000000"), name="graphdb")    
-    save_to_kg(kg_driver, res_json, filename)
+    # 导入结果到知识图谱    
+    save_to_kg(res_json, filename)
