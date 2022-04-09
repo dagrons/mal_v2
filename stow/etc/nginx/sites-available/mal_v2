@@ -1,12 +1,8 @@
 server {
-       listen 10002 ssl;
+       listen 10002;
        server_name mal.lab;
 
        client_max_body_size 200M;
-
-
-       ssl_certificate  /etc/nginx/cert/certificate.pem;
-       ssl_certificate_key      /etc/nginx/cert/key.pem;
 
 
        location ~ ^/api/v2/ {
