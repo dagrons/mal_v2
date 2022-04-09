@@ -62,39 +62,7 @@ def save_to_kg(res_json, filename):
     dll_list = string_duplicate_4(dll_list)
     ip_list = string_duplicate_4(ip_list)
     url_list = string_duplicate_4(url_list)
-    mail_list = string_duplicate_4(mail_list)
-
-    def add_malware(tx, filename):
-        tx.run("MERGE (a:Malware {name:$name})", name=filename)
-
-    def add_dll(tx, filename, dll_name):
-        tx.run("MERGE (a:DLL {name: $dll_name}) ", dll_name=dll_name)
-        tx.run("MATCH (m:Malware) WHERE m.name=\"{}\" MATCH (a:DLL) WHERE a.name=\"{}\" MERGE (m)-[:DLL]->(a)".format(filename, dll_name))            
-
-    def add_mail(tx, filename, mail_name):
-        tx.run("MERGE (a:Mail {name: $mail_name}) ", mail_name=mail_name)
-        tx.run("MATCH (m:Malware) WHERE m.name=\"{}\" MATCH (a:Mail) WHERE a.name=\"{}\" MERGE (m)-[:Mail]->(a)".format(filename, mail_name))
-
-    def add_ip(tx, filename, ip):
-        tx.run("MERGE (a:IP {name: $ip}) ", ip=ip)
-        tx.run("MATCH (m:Malware) WHERE m.name=\"{}\" MATCH (a:IP) WHERE a.name=\"{}\" MERGE (m)-[:IP]->(a)".format(filename, ip))
-
-    def add_url(tx, filename, url):
-        tx.run("MERGE (a:URL {name: $url}) ", url=url)
-        tx.run("MATCH (m:Malware) WHERE m.name=\"{}\" MATCH (a:URL) WHERE a.name=\"{}\" MERGE (m)-[:URL]->(a)".format(filename, url))
-    
-    with kg_driver.session() as session:
-        session.write_transaction(add_malware, filename)
-        for dll in dll_list:
-            session.write_transaction(add_dll, filename, dll)                        
-        for mail in mail_list:
-            session.write_transaction(add_mail, filename, mail)
-        for ip in ip_list:
-            session.write_transaction(add_ip, filename, ip)
-        for url in url_list:
-            session.write_transaction(add_url, filename, url)            
-
-
+    mail_list = string_duplicate_4(mail_list)    
 
 def to_neo4j(g, res_json, filename):
     """
