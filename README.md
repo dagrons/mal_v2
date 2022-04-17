@@ -1,11 +1,19 @@
 ![mal](https://user-images.githubusercontent.com/61461791/156354487-44a5157e-38a1-49b1-be57-96a85d7e062f.png)
 
 
-- [Requires](#Requires)
-- [Development](#Development)
-- [Docker](#Docker)
-- [Deployment](#Deployment)
-- [APIs](#APIs)
+- [Requires](#requires)
+  - [docker-cuckoo](#docker-cuckoo)
+- [Development](#development)
+  - [Pre-install](#pre-install)
+  - [Adapt Conf](#adapt-conf)
+  - [Start App](#start-app)
+- [Docker](#docker)
+  - [Adapt Conf](#adapt-conf-1)
+  - [Start App](#start-app-1)
+- [Deployment](#deployment)
+  - [Stow](#stow)
+  - [Start App](#start-app-2)
+- [APIs](#apis)
 
 
 This project builds a malware analysis platform
