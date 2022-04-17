@@ -1,6 +1,6 @@
 FROM python:3.7.10-stretch
 
-COPY src/requirements.txt /tmp/requirements.txt
+COPY app/requirements.txt /tmp/requirements.txt
 
 RUN apt-get update && \
     apt-get install -y nasm 
