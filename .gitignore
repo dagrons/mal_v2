@@ -6,3 +6,4 @@ playground/
 !.supervisord/.gitkeep
 *~
 temp/
+/app/.idea/

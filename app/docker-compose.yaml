@@ -1,0 +1,28 @@
+version: "3.3"
+
+services:
+  mal:
+    image: mal_v2
+    container_name: mal
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 5001:5000
+    environment:
+      - CELERY_BROKER_URL=redis://host.docker.internal:6379/0
+      - CELERY_BROKER_BACKEND=redis://host.docker.internal:6379/0
+      - MAX_WORKERS=5
+      - REDIS_HOST=host.docker.internal
+      - MONGO_DBNAME=mal
+      - MONGO_HOST=10.112.254.160
+      - MONGO_PORT=27018
+      - MONGO_USERNAME=mongoadmin
+      - MONGO_PASSWORD=mongoadmin
+      - MONGO_AUTHDB=admin
+      - NEO4J_URL=http://10.112.254.160:7475
+      - NEO4J_USERNAME=neo4j
+      - NEO4J_PASSWORD=daxiahyh
+    volumes:
+      - /tmp/app:/tmp
+

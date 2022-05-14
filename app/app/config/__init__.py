@@ -1,10 +1,6 @@
-from .basicConfig import basicConfig
-from .developmentConfig import developmentConfig
-from .productionConfig import productionConfig
-from .testConfig import testConfig
+from .basic_config import basicConfig
+from .development_config import developmentConfig
 
 config = {
     'development': developmentConfig,
-    'production': productionConfig,
-    'test': testConfig
 }

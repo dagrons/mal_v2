@@ -1,5 +1,4 @@
 from flask.blueprints import Blueprint 
-from app import celery as celery_app
 from .task import task_bp
 from .feature import feature_bp
 

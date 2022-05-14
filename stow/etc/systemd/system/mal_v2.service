@@ -6,7 +6,7 @@ Requires=docker-cuckoo.service
 [Service]
 User=root
 ExecStart=/bin/bash -c 'cd /opt/mal_v2 && docker-compose up'
-ExecStop=/bin/bash -c 'cd /opt/mal_v2 && docker-compose down -v && rm -f /data/mal_v2/redis/dump.rdb'
+ExecStop=/bin/bash -c 'cd /opt/mal_v2 && docker-compose down -v'
 
 [Install]
 WantedBy=multi-user.target
